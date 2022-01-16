@@ -29,8 +29,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-rec
   && rm -rf /var/lib/apt/lists/*
 
 # configure httpd
-# TODO: change to "perl"
-RUN a2enmod cgi headers \
+RUN a2enmod headers \
   && ln -sf /proc/self/fd/1 /var/log/apache2/access.log \
   && ln -sf /proc/self/fd/2 /var/log/apache2/error.log \
   && ln -s /srv/cmap/httpd-cmap.conf /etc/apache2/conf-enabled/httpd-cmap.conf

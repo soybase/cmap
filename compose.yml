@@ -1,0 +1,6 @@
+services:
+  cmap:
+    build: .
+    restart: always
+    ports:
+      - "8088:80"

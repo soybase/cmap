@@ -52,6 +52,10 @@ COPY ./data/sequence_genetic3 ./data/sequence_genetic3
 COPY ./conf/sequence_genetic3.conf ./conf/
 RUN cd db && ../data/sequence_genetic3/load.sh
 
+COPY ./data/sequence_genetic4 ./data/sequence_genetic4
+COPY ./conf/sequence_genetic4.conf ./conf/
+RUN cd db && ../data/sequence_genetic4/load.sh
+
 FROM deps AS final
 
 # configure httpd

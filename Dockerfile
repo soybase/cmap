@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:20.04 AS deps
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
   apache2 \
@@ -28,6 +28,30 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-rec
   sqlite3 \
   && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /srv/cmap
+
+COPY ./conf ./conf
+COPY ./lib ./lib
+
+ENV CMAP_ROOT="/srv/cmap/"
+ENV PERL5LIB="/srv/cmap/lib/"
+
+FROM deps AS load
+
+COPY ./bin/cmap_admin.pl ./bin/
+COPY ./sql/cmap.create.sqlite ./sql/cmap.create.sqlite
+
+ENV PATH="/srv/cmap/bin:${PATH}"
+
+RUN mkdir ./db
+
+COPY ./data/soytedb ./data/soytedb
+RUN cd db && ../data/soytedb/load.sh
+
+FROM deps AS final
+
+COPY --from=load /srv/cmap/db/ /srv/cmap/db/
+
 # configure httpd
 RUN a2enmod headers rewrite \
   && ln -sf /proc/self/fd/1 /var/log/apache2/access.log \
@@ -36,8 +60,6 @@ RUN a2enmod headers rewrite \
 
 COPY . /srv/cmap/
 
-ENV CMAP_ROOT="/srv/cmap/"
-ENV PERL5LIB="/srv/cmap/lib/"
 # cache_dir
 RUN ln -s /tmp/cmap /srv/cmap/htdocs/tmp
 

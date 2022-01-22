@@ -30,7 +30,6 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-rec
 
 WORKDIR /srv/cmap
 
-COPY ./conf ./conf
 COPY ./lib ./lib
 
 ENV CMAP_ROOT="/srv/cmap/"
@@ -46,19 +45,26 @@ ENV PATH="/srv/cmap/bin:${PATH}"
 RUN mkdir ./db
 
 COPY ./data/soytedb ./data/soytedb
+COPY ./conf/soytedb.conf ./conf/
 RUN cd db && ../data/soytedb/load.sh
 
-FROM deps AS final
+COPY ./data/sequence_genetic3 ./data/sequence_genetic3
+COPY ./conf/sequence_genetic3.conf ./conf/
+RUN cd db && ../data/sequence_genetic3/load.sh
 
-COPY --from=load /srv/cmap/db/ /srv/cmap/db/
+FROM deps AS final
 
 # configure httpd
 RUN a2enmod headers rewrite \
   && ln -sf /proc/self/fd/1 /var/log/apache2/access.log \
-  && ln -sf /proc/self/fd/2 /var/log/apache2/error.log \
-  && ln -s /srv/cmap/httpd-cmap.conf /etc/apache2/conf-enabled/httpd-cmap.conf
+  && ln -sf /proc/self/fd/2 /var/log/apache2/error.log
 
-COPY . /srv/cmap/
+COPY --from=load /srv/cmap/db/ /srv/cmap/db/
+COPY ./httpd-cmap.conf /etc/apache2/conf-enabled/httpd-cmap.conf
+COPY ./cgi-bin ./cgi-bin
+COPY ./conf ./conf
+COPY ./htdocs ./htdocs
+COPY ./templates ./templates
 
 # cache_dir
 RUN ln -s /tmp/cmap /srv/cmap/htdocs/tmp

@@ -2,6 +2,7 @@
 !bin
 !cgi-bin
 !conf
+!data
 !htdocs
 !httpd-cmap.conf
 !lib

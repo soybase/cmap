@@ -29,7 +29,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-rec
   && rm -rf /var/lib/apt/lists/*
 
 # configure httpd
-RUN a2enmod headers \
+RUN a2enmod headers rewrite \
   && ln -sf /proc/self/fd/1 /var/log/apache2/access.log \
   && ln -sf /proc/self/fd/2 /var/log/apache2/error.log \
   && ln -s /srv/cmap/httpd-cmap.conf /etc/apache2/conf-enabled/httpd-cmap.conf
@@ -37,7 +37,8 @@ RUN a2enmod headers \
 COPY . /srv/cmap/
 
 ENV CMAP_ROOT="/srv/cmap/"
-ENV PATH="/srv/cmap/bin:${PATH}"
 ENV PERL5LIB="/srv/cmap/lib/"
+# cache_dir
+RUN ln -s /tmp/cmap /srv/cmap/htdocs/tmp
 
 ENTRYPOINT ["apachectl", "-DFOREGROUND"]

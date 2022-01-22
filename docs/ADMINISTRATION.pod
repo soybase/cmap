@@ -1079,7 +1079,7 @@ Name of the cookie holding user preferences
 
 =item * cookie_domain [ Optional  ]
 
-=item * stylesheet [ default: /cmap/cmap.css ]
+=item * stylesheet [ default: /htdocs/cmap.css ]
 
 The URL path of the css formatted stylesheet to use. If unset, defaults to
 the URL path of I<web_cmap_htdocs_dir>/cmap.css.

@@ -113,7 +113,7 @@ The conf dir and the global conf file are specified in Constants.pm
                                             'sessions'),
                    template_dir => catdir( $ENV{'CMAP_ROOT'} , 'templates'),
                    web_document_root_dir => $ENV{'CMAP_ROOT'},
-                   web_cmap_htdocs_dir   => '/cmap/htdocs',
+                   web_cmap_htdocs_dir   => '/htdocs',
                })->getall();
             $self->{'global_config'} = \%config;
         } else {

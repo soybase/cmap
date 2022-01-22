@@ -363,9 +363,9 @@ slot_border_color khaki
 
 #
 # Stylesheet
-# Default: /cmap/cmap.css
+# Default: /htdocs/cmap.css
 #
-stylesheet /cmap/cmap.css
+stylesheet /htdocs/cmap.css
 
 #
 # Name of the cookie holding user preferences

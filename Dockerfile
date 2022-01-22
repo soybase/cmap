@@ -60,6 +60,10 @@ COPY ./data/sbt_cmap ./data/sbt_cmap
 COPY ./conf/shared.cfg ./conf/sbt_cmap.conf ./conf/
 RUN cd db && ../data/sbt_cmap/load.sh
 
+COPY ./data/pmd ./data/pmd
+COPY ./conf/pmd.conf ./conf/
+RUN cd db && ../data/pmd/load.sh
+
 FROM deps AS final
 
 # configure httpd

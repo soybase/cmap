@@ -56,6 +56,10 @@ COPY ./data/sequence_genetic4 ./data/sequence_genetic4
 COPY ./conf/sequence_genetic4.conf ./conf/
 RUN cd db && ../data/sequence_genetic4/load.sh
 
+COPY ./data/sbt_cmap ./data/sbt_cmap
+COPY ./conf/shared.cfg ./conf/sbt_cmap.conf ./conf/
+RUN cd db && ../data/sbt_cmap/load.sh
+
 FROM deps AS final
 
 # configure httpd

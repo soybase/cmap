@@ -82,3 +82,5 @@ COPY ./templates ./templates
 RUN ln -s /tmp/cmap /srv/cmap/htdocs/tmp
 
 ENTRYPOINT ["apachectl", "-DFOREGROUND"]
+
+EXPOSE 80

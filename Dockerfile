@@ -69,7 +69,9 @@ FROM deps AS final
 # configure httpd
 RUN a2enmod headers rewrite \
   && ln -sf /proc/self/fd/1 /var/log/apache2/access.log \
-  && ln -sf /proc/self/fd/2 /var/log/apache2/error.log
+  && ln -sf /proc/self/fd/2 /var/log/apache2/error.log \
+  && ln -sf /proc/self/fd/1 /var/log/apache2/other_vhosts_access.log \
+  && chown www-data /var/log/apache2 /var/run/apache2
 
 COPY --from=load /srv/cmap/db/ /srv/cmap/db/
 COPY ./httpd-cmap.conf /etc/apache2/conf-enabled/httpd-cmap.conf
@@ -80,6 +82,8 @@ COPY ./templates ./templates
 
 # cache_dir
 RUN ln -s /tmp/cmap /srv/cmap/htdocs/tmp
+
+USER www-data
 
 ENTRYPOINT ["apachectl", "-DFOREGROUND"]
 

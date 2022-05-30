@@ -66,10 +66,16 @@ RUN cd db && ../data/pmd/load.sh
 
 FROM deps AS final
 
-# configure httpd
+# 12-factor the logging
+# httpd needs to listen on 8080 (or some port > 1024) for cf-for-k8s
+# https://github.com/cloudfoundry/cf-for-k8s/issues/243
 RUN a2enmod headers rewrite \
   && ln -sf /proc/self/fd/1 /var/log/apache2/access.log \
-  && ln -sf /proc/self/fd/2 /var/log/apache2/error.log
+  && ln -sf /proc/self/fd/2 /var/log/apache2/error.log \
+  && ln -sf /proc/self/fd/1 /var/log/apache2/other_vhosts_access.log \
+  && sed -i'' 's/VirtualHost \*:80/VirtualHost *:8080/'  /etc/apache2/sites-enabled/000-default.conf \
+  && sed -i'' 's/Listen 80/Listen 8080/'  /etc/apache2/ports.conf \
+  && chown www-data /var/log/apache2 /var/run/apache2
 
 COPY --from=load /srv/cmap/db/ /srv/cmap/db/
 COPY ./httpd-cmap.conf /etc/apache2/conf-enabled/httpd-cmap.conf
@@ -81,6 +87,9 @@ COPY ./templates ./templates
 # cache_dir
 RUN ln -s /tmp/cmap /srv/cmap/htdocs/tmp
 
+# www-data; needs to be non-root UID for cf-to-k8s
+USER 33
+
 ENTRYPOINT ["apachectl", "-DFOREGROUND"]
 
-EXPOSE 80
+EXPOSE 8080

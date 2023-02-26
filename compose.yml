@@ -2,5 +2,7 @@ services:
   cmap:
     build: .
     restart: always
+    healthcheck:
+      test: GET -d http://localhost:8080/
     ports:
       - "8088:8080"

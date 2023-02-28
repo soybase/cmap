@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS deps
+FROM debian:bullseye-slim AS deps
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
   apache2 \

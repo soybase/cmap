@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS deps
+FROM ubuntu:22.04 AS deps
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
   apache2 \
